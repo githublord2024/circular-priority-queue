@@ -1,0 +1,206 @@
+#include <stdio.h>
+#include <limits.h>
+
+#define MAX 100
+
+// Circular Queue
+int cq[MAX];
+int front_cq = -1, rear_cq = -1, size_cq = 0;
+
+// Priority Queue
+int pq[MAX];
+int priority[MAX];
+int front_pq = -1, rear_pq = -1, size_pq = 0;
+
+// Circular Queue functions
+void enqueue_cq(int item) {
+    if ((rear_cq + 1) % MAX == front_cq) {
+        printf("Circular Queue overflow\n");
+    } else {
+        if (front_cq == -1) {
+            front_cq = 0;
+        }
+        rear_cq = (rear_cq + 1) % MAX;
+        cq[rear_cq] = item;
+        size_cq++;
+    }
+}
+
+void dequeue_cq() {
+    if (front_cq == -1) {
+        printf("Circular Queue underflow\n");
+    } else {
+        printf("Dequeued: %d\n", cq[front_cq]);
+        front_cq = (front_cq + 1) % MAX;
+        if (front_cq == (rear_cq + 1) % MAX) {
+            front_cq = rear_cq = -1;
+            size_cq = 0;
+        } else {
+            size_cq--;
+        }
+    }
+}
+
+void display_cq() {
+    if (front_cq == -1) {
+        printf("Circular Queue is empty\n");
+    } else {
+        int i = front_cq;
+        do {
+            printf("%d ", cq[i]);
+            i = (i + 1) % MAX;
+        } while (i != (rear_cq + 1) % MAX);
+        printf("\n");
+    }
+}
+
+// Priority Queue functions
+void enqueue_pq(int item, int prio) {
+    if (size_pq == MAX) {
+        printf("Priority Queue overflow\n");
+        return;
+    }
+    if (front_pq == -1) {
+        front_pq = 0;
+    }
+    rear_pq = (rear_pq + 1) % MAX;
+    pq[rear_pq] = item;
+    priority[rear_pq] = prio;
+    size_pq++;
+
+    // Rearranging priority queue
+    for (int i = rear_pq; i != front_pq; i = (i - 1 + MAX) % MAX) {
+        if (priority[(i - 1 + MAX) % MAX] < priority[i]) {
+            // Swap
+            int temp_item = pq[i];
+            int temp_prio = priority[i];
+            pq[i] = pq[(i - 1 + MAX) % MAX];
+            priority[i] = priority[(i - 1 + MAX) % MAX];
+            pq[(i - 1 + MAX) % MAX] = temp_item;
+            priority[(i - 1 + MAX) % MAX] = temp_prio;
+        } else {
+            break;
+        }
+    }
+}
+
+void dequeue_pq() {
+    if (front_pq == -1) {
+        printf("Priority Queue underflow\n");
+    } else {
+        printf("Dequeued: %d\n", pq[front_pq]);
+        if (front_pq == rear_pq) {
+            front_pq = rear_pq = -1;
+            size_pq = 0;
+        } else {
+            front_pq = (front_pq + 1) % MAX;
+            size_pq--;
+        }
+    }
+}
+
+void display_pq() {
+    if (front_pq == -1) {
+        printf("Priority Queue is empty\n");
+    } else {
+        int i = front_pq;
+        do {
+            printf("Item: %d, Priority: %d\n", pq[i], priority[i]);
+            i = (i + 1) % MAX;
+        } while (i != (rear_pq + 1) % MAX);
+    }
+}
+
+int main() {
+    int choice, item, prio;
+
+    while (1) {
+        printf("\nMenu:\n");
+        printf("1. Circular Queue Operations\n");
+        printf("2. Priority Queue Operations\n");
+        printf("3. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                while (1) {
+                    printf("\nCircular Queue Menu:\n");
+                    printf("1. Enqueue\n");
+                    printf("2. Dequeue\n");
+                    printf("3. Display\n");
+                    printf("4. Back to Main Menu\n");
+                    printf("Enter your choice: ");
+                    scanf("%d", &choice);
+
+                    switch (choice) {
+                        case 1:
+                            printf("Enter the item to enqueue: ");
+                            scanf("%d", &item);
+                            enqueue_cq(item);
+                            break;
+                        case 2:
+                            dequeue_cq();
+                            break;
+                        case 3:
+                            display_cq();
+                            break;
+                        case 4:
+                            break;
+                        default:
+                            printf("Invalid choice\n");
+                    }
+
+                    if (choice == 4) {
+                        break;
+                    }
+                }
+                break;
+
+            case 2:
+                while (1) {
+                    printf("\nPriority Queue Menu:\n");
+                    printf("1. Enqueue\n");
+                    printf("2. Dequeue\n");
+                    printf("3. Display\n");
+                    printf("4. Back to Main Menu\n");
+                    printf("Enter your choice: ");
+                    scanf("%d", &choice);
+
+                    switch (choice) {
+                        case 1:
+                            printf("Enter the item to enqueue: ");
+                            scanf("%d", &item);
+                            printf("Enter the priority of the item: ");
+                            scanf("%d", &prio);
+                            enqueue_pq(item, prio);
+                            break;
+                        case 2:
+                            dequeue_pq();
+                            break;
+                        case 3:
+                            display_pq();
+                            break;
+                        case 4:
+                            break;
+                        default:
+                            printf("Invalid choice\n");
+                    }
+
+                    if (choice == 4) {
+                        break;
+                    }
+                }
+                break;
+
+            case 3:
+                printf("Exiting...\n");
+                return 0;
+
+            default:
+                printf("Invalid choice\n");
+        }
+    }
+
+    return 0;
+}
