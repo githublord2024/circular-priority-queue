@@ -1,0 +1,88 @@
+#include <stdio.h>
+
+int a[100], top, size;
+
+void push(int item) {
+    if (top == size - 1) {
+        printf("Stack overflow\n");
+    } else {
+        top++;
+        a[top] = item;
+    }
+}
+
+void pop() {
+    if (top == -1) {
+        printf("Stack underflow\n");
+    } else {
+        top--;
+    }
+}
+
+void peek() {
+    if (top == -1) {
+        printf("Stack underflow\n");
+    } else {
+        printf("%d\n", a[top]);
+    }
+}
+
+void display() {
+    if (top == -1) {
+        printf("Stack is empty\n");
+    } else {
+        for (int i = top; i >= 0; i--) {
+            printf("%d ", a[i]);
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    int choice, item;
+
+    // Initialize top to -1
+    top = -1;
+
+    printf("Enter the size of the array (stack):\n");
+    scanf("%d", &size);
+
+    printf("Enter the elements:\n");
+    for (int i = 0; i < size; i++) {
+        scanf("%d", &a[i]);
+    }
+
+    // Set top to the last index after input
+    top = size - 1;
+
+    do {
+        printf("1. PUSH\n2. POP\n3. PEEK\n4. DISPLAY\n0. EXIT\n");
+        printf("Enter your choice:\n");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter the item to be inserted:\n");
+                scanf("%d", &item);
+                push(item);
+                break;
+            case 2:
+                pop();
+                break;
+            case 3:
+                peek();
+                break;
+            case 4:
+                display();
+                break;
+            case 0:
+                printf("Exiting...\n");
+                break;
+            default:
+                printf("Invalid choice\n");
+                break;
+        }
+    } while (choice != 0);
+
+    return 0;
+}
